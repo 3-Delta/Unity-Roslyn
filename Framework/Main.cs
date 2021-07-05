@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,39 @@ using Microsoft.CodeAnalysis.CSharp;
 using Newtonsoft.Json;
 
 namespace Framework {
+    public class FormInt2 {
+        public int x;
+        public int y;
+
+        public FormInt2(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    public class Test {
+        public int a;
+        public float fl;
+        public List<string> strList = new List<string>() { "qwe", "rty" };
+        public List<FormInt2> formList = new List<FormInt2>() { new FormInt2(6, 6), new FormInt2(9, 9) };
+
+        public Test() {
+            a = 3;
+            fl = 1f;
+        }
+
+        public static int StaticAdd(int b) {
+            return 2 + b;
+        }
+
+        public int InstanceAdd(int b) {
+            //Vector2 v2 = new Vector2(1, 4);
+            //Console.WriteLine(v2);
+
+            return a + b;
+        }
+    }
+
     internal class Program {
         // https://blog.csdn.net/WPwalter/article/details/80545207
         private static void Main(string[] args) {
@@ -44,6 +78,11 @@ namespace Framework {
                     string jsonPath = Environment.CurrentDirectory + "Json.json";
                     string json = JsonConvert.SerializeObject(instance, Formatting.Indented);
                     File.WriteAllText(jsonPath, json);
+                    Console.WriteLine("Json = " + json);
+
+                    json = File.ReadAllText(jsonPath);
+                    var hotfixJsonObj = JsonConvert.DeserializeObject<Test>(json);
+                    json = JsonConvert.SerializeObject(hotfixJsonObj, Formatting.Indented);
                     Console.WriteLine("Json = " + json);
                 }
                 else {
