@@ -15,6 +15,7 @@ namespace Hotfix {
         public Test() {
             a = 3;
             fl = 1f;
+            formList.Add(new FormInt2(8, 8));
         }
 
         public static int StaticAdd(int b) {
@@ -23,15 +24,18 @@ namespace Hotfix {
 
         public int InstanceAdd(int b) {
             //Vector2 v2 = new Vector2(1, 4);
-            //Console.WriteLine(v2);
+            //Console.WriteLine(v2.x.ToString());
 
             return a + b;
         }
     }
 
     class Program {
+        // 将Hotfix弄成工程，并且非库，还有Main函数，主要是为了模拟Unity下热更层的环境， 同时为了独立热更工程可以快速模块测试，所以提供main函数
         static void Main(string[] args) {
-            Console.WriteLine("Hello World!");
+            int rlt = new Test().InstanceAdd(4);
+
+            Console.WriteLine("Hotfix: " + rlt);
 
             Console.ReadKey();
         }
