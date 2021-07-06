@@ -6,12 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Framework\Framework.csproj" />
+    <ProjectReference Include="..\Framework\Framework.csproj">
+      <Private>false</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>Deps\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\Deps\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -1,43 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using Newtonsoft.Json;
 
-using Framework;
+using System;
+using System.IO;
+using System.Reflection;
 
-//using UnityEngine;
+using UnityEngine;
 
 namespace Hotfix {
-    public class Test {
-        public int a;
-        public float fl;
-        public List<string> strList = new List<string>() { "qwe", "rty" };
-        public List<FormInt2> formList = new List<FormInt2>() { new FormInt2(6, 6), new FormInt2(9, 9) };
-
-        public Test() {
-            a = 3;
-            fl = 1f;
-            formList.Add(new FormInt2(8, 8));
+    public class UIMgr {
+        public static void Open(string uiName) {
+            Debug.LogError("UImgr.Open: " + uiName);
         }
-
-        public static int StaticAdd(int b) {
-            return 2 + b;
-        }
-
-        public int InstanceAdd(int b) {
-            //Vector2 v2 = new Vector2(1, 4);
-            //Console.WriteLine(v2.x.ToString());
-
-            return a + b;
+        public static void Close(string uiName) {
+            Debug.LogError("UImgr.Close: " + uiName);
         }
     }
 
-    class Program {
-        // 将Hotfix弄成工程，并且非库，还有Main函数，主要是为了模拟Unity下热更层的环境， 同时为了独立热更工程可以快速模块测试，所以提供main函数
-        static void Main(string[] args) {
-            int rlt = new Test().InstanceAdd(4);
+    public class FormInt3 {
+        public int x;
+        public int y;
+        public int z;
 
-            Console.WriteLine("Hotfix: " + rlt);
+        public FormInt3(int x, int y, int z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+    }
 
-            Console.ReadKey();
+    public class Program {
+        public static void Main(string[] args) {
+            // string path = Environment.CurrentDirectory + "\\..\\..\\..\\..\\HotfixUI\\Program.cs";
+            //var tree = SyntaxFactory.ParseSyntaxTree(File.ReadAllText(path));
+            //var compilation = CSharpCompilation.Create("TestClsContent",
+            //    new[] { tree },
+            //    options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)).AddReferences(
+            //        // 这算是偷懒了吗？我把 .NET Core 运行时用到的那些引用都加入到引用了。
+            //        // 加入引用是必要的，不然连 object 类型都是没有的，肯定编译不通过。
+            //        AppDomain.CurrentDomain.GetAssemblies().Select(x => MetadataReference.CreateFromFile(x.Location)));
+
+            //using (MemoryStream stream = new MemoryStream())
+            //{
+            //    // 编译到内存流中
+            //    var compileResult = compilation.Emit(stream);
+            //    if (compileResult.Success)
+            //    {
+            //        Assembly assembly = Assembly.Load(stream.GetBuffer());
+
+            //        var cls = assembly.GetType("Hotfix.Test");
+            //        var staticMethod = cls.GetMethod("StaticAdd", BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance);
+            //        var result = staticMethod.Invoke(null, new object[] { 4 }).ToString();
+
+            //        Console.WriteLine(result);
+
+            //        var instance = cls.Assembly.CreateInstance("Hotfix.Test");
+            //        var instanceMethod = cls.GetMethod("InstanceAdd", BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance);
+            //        result = instanceMethod.Invoke(instance, new object[] { 4 }).ToString();
+
+            //        Console.WriteLine(result);
+
+            //        string jsonPath = Environment.CurrentDirectory + "Json.json";
+            //        string json = JsonConvert.SerializeObject(instance, Formatting.Indented);
+            //        File.WriteAllText(jsonPath, json);
+            //        Console.WriteLine("Json = " + json);
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("编译失败");
+            //    }
+            //}
+
+            // 热更工程中，引用了著工程中没有引用的a.dll., 那么此时即使在著工程中Assembly.load这个a.dll，也不会让著工程在反射执行热更工程的时候正常，因为热更引用的a.dll
+            // 没有被clr正确识别
+            //string path = Environment.CurrentDirectory + "\\..\\..\\..\\..\\HotfixUI\\Deps\\UnityEngine.CoreModule.dll";
+            //Assembly assembly = Assembly.LoadFile(path);
+
+            string path = Environment.CurrentDirectory + "\\..\\..\\..\\..\\HotfixUI\\bin\\Debug\\netcoreapp3.1\\HotfixUI.dll";
+            Assembly assembly = Assembly.LoadFile(path);
+
+            var cls = assembly.GetType("HotfixUI.Program");
+            var staticMethod = cls.GetMethod("Main", BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance);
+            staticMethod.Invoke(null, new string[] { null});
         }
     }
 }
